@@ -2,6 +2,7 @@ import xlrd
 import xlwt
 import xdrlib
 import sys
+import xlutils.copy
 
 
 if __name__ == "__main__":
@@ -15,9 +16,11 @@ if __name__ == "__main__":
                 map_dic[pairs[0]] = row_col
 
     table_file = "D:/tmp/xuejia/template.xls"
-    data = xlrd.open_workbook(table_file)
+    data = xlrd.open_workbook(table_file, formatting_info=True)
     first_sheet = data.sheets()[0]
     second_sheet = data.sheets()[1]
+
+    outweb = xlutils.copy.copy(data)
 
     danwei = '填报单位：' + '' + '市' + '县（市、区）' + '' + '乡镇（单位）' + '' + '村（社区）'
     xingming = '姓名'
@@ -26,15 +29,18 @@ if __name__ == "__main__":
     chengwei = '称谓'
     data = '出生年月'
 
-    row_num = map_dic["填报单位"][0]
-    col_num = map_dic["填报单位"][1]
+    row_num = int(map_dic["填报单位"][0])
+    col_num = int(map_dic["填报单位"][1])
 
     first_sheet.put_cell(int(row_num), int(col_num), 1, danwei, xf_index=0)
+    outweb.get_sheet(0).write(row_num, col_num, danwei)
 
-    row_num = map_dic["姓名"][0]
-    col_num = map_dic["姓名"][1]
+    row_num = int(map_dic["姓名"][0])
+    col_num = int(map_dic["姓名"][1])
     first_sheet.put_cell(int(row_num), int(col_num), 1, xingming, xf_index=0)
+    outweb.get_sheet(0).write(row_num, col_num, xingming)
     # data.save("./new.xls")
+    outweb.save('output2.xls')
 
     wbook = xlwt.Workbook()
     wsheet = wbook.add_sheet(first_sheet.name)
